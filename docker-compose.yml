@@ -20,7 +20,8 @@ services:
 
 
   registry:
-    build: .
+    #build: .
+    image: hwx
     depends_on:
       - db
     ports:

@@ -30,9 +30,9 @@ RUN cp /tmp/HDF/mysql-connector-java-8.0.23/mysql-connector-java-8.0.23.jar /opt
 RUN rm -rf /tmp/HDF
 RUN cp hortonworks-registry-0.8.1/conf/registry.yaml hortonworks-registry-0.8.1/conf/registry.yaml.template
 RUN sed -i s/com.mysql.jdbc.jdbc2.optional.MysqlDataSource/com.mysql.cj.jdbc.MysqlDataSource/g hortonworks-registry-0.8.1/conf/registry.yaml.template
-RUN sed -i "s!jdbc:mysql://localhost/schema_registry!jdbc:mysql://$DB_HOST:$DB_PORT/$DB_NAME!g" hortonworks-registry-0.8.1/conf/registry.yaml.template
-RUN sed -i "s/registry_user/$DB_USER/g" hortonworks-registry-0.8.1/conf/registry.yaml.template
-RUN sed -i "s/registry_password/$DB_PASSWORD/g" hortonworks-registry-0.8.1/conf/registry.yaml.template
+RUN sed -i "s!jdbc:mysql://localhost/schema_registry!jdbc:mysql://\$DB_HOST:\$DB_PORT/\$DB_NAME!g" hortonworks-registry-0.8.1/conf/registry.yaml.template
+RUN sed -i "s/registry_user/\$DB_USER/g" hortonworks-registry-0.8.1/conf/registry.yaml.template
+RUN sed -i "s/registry_password/\$DB_PASSWORD/g" hortonworks-registry-0.8.1/conf/registry.yaml.template
 RUN ln -s /opt/hortonworks-registry-0.8.1 /opt/hortonworks-registry
 RUN groupadd -r hortonworks && useradd --no-log-init -r -g hortonworks hortonworks
 COPY entrypoint.sh /opt/hortonworks-registry/entrypoint.sh
@@ -54,7 +54,7 @@ USER hortonworks
 
 WORKDIR /opt/hortonworks-registry
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/opt/hortonworks-registry/entrypoint.sh"]
 
-CMD ["./bin/registry-server-start.sh","./conf/registry.yaml"]
+CMD ["/opt/hortonworks-registry/bin/registry-server-start.sh","/opt/hortonworks-registry/conf/registry.yaml"]
 
